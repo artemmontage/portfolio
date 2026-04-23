@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>artem | Portfolio</title>
+    <style>
+        /* ПОЛНОЕ СКРЫТИЕ КУРСОРA */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* МЯГКИЙ ШУМ */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* КАСТОМНЫЙ КУРСОР */
+        #cursor {
+            width: 25px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            will-change: left, top;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -10%, #1a1a1a 0%, #050505 70%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero h1 {
+            font-size: clamp(60px, 15vw, 130px);
+            font-weight: 800;
+            letter-spacing: -6px;
+            line-height: 0.9;
+            text-transform: lowercase;
+            margin-bottom: 15px;
+            background: linear-gradient(180deg, #fff 40%, rgba(255,255,255,0.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero .description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 40px;
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ КНОПОК */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-glass {
+            display: inline-block;
+            padding: 18px 45px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-glass:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-3px);
+        }
+
+        .glass-label {
+            display: inline-block;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.8);
+            margin: 40px 0;
+        }
+
+        .grid {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 80px;
+            width: 100%;
+        }
+
+        .grid.vertical { 
+            grid-template-columns: repeat(2, 1fr); 
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .grid.horizontal { 
+            grid-template-columns: repeat(2, 1fr); 
+        }
+
+        .item {
+            position: relative;
+            background: #000;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+        }
+
+        .vertical .item { aspect-ratio: 9/16; }
+        .horizontal .item { aspect-ratio: 16/9; }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: transparent;
+            z-index: 10;
+        }
+
+        @media (max-width: 800px) {
+            .grid.vertical, .grid.horizontal { grid-template-columns: 1fr; }
+            #cursor { display: none; }
+            * { cursor: auto !important; }
+            .btn-glass { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <section class="hero">
+            <h1>artem</h1>
+            <p class="description">I'm a video editor doing the result</p>
+            <div class="btn-group">
+                <a href="https://t.me/Artydff" target="_blank" class="btn-glass">Связаться</a>
+                <a href="https://t.me/artemmontager" target="_blank" class="btn-glass">Личный блог</a>
+            </div>
+        </section>
+
+        <center><div class="glass-label">Shorts / Reels</div></center>
+        <section class="grid vertical">
+            <div class="item">
+                <video src="https://www.dropbox.com/scl/fi/usfjtyibj6vxxzfn3o1no/video_2026-04-22_17-49-02.mp4?rlkey=7u6e4n8uyofmajvzw83vnlio1&st=ihhpqbvn&raw=1" playsinline loop muted></video>
+                <div class="video-overlay"></div>
+            </div>
+            <div class="item">
+                <video src="https://www.dropbox.com/scl/fi/6cftig0aplaahy5bxamq9/.mp4?rlkey=nhs9k8ppj1fze31ak9wsumqhr&st=ob28lie7&raw=1" playsinline loop muted></video>
+                <div class="video-overlay"></div>
+            </div>
+        </section>
+
+        <center><div class="glass-label">Commercial</div></center>
+        <section class="grid horizontal">
+            <div class="item">
+                <video src="https://www.dropbox.com/scl/fi/jk0hym12v0srfdwxfhfcu/vod.mp4?rlkey=txpfdjtdjazvj8i10vltciks6&st=zyq1yiiw&raw=1" controls playsinline loop muted></video>
+                <div class="video-overlay"></div>
+            </div>
+            <div class="item">
+                <video src="https://www.dropbox.com/scl/fi/bwe81chyueujtrjpx36vv/.mp4?rlkey=z3y1mlbpas0zq46bpux0pobx7&st=fambersn&raw=1" controls playsinline loop muted></video>
+                <div class="video-overlay"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mouseenter', () => { cursor.style.opacity = 1; });
+        document.addEventListener('mouseleave', () => { cursor.style.opacity = 0; });
+
+        document.querySelectorAll('.item').forEach(item => {
+            const video = item.querySelector('video');
+            const overlay = item.querySelector('.video-overlay');
+
+            overlay.addEventListener('mouseenter', () => { video.play(); });
+            overlay.addEventListener('mouseleave', () => { video.pause(); });
+            
+            overlay.addEventListener('click', () => {
+                video.muted = !video.muted;
+            });
+        });
+    </script>
+</body>
+</html>
