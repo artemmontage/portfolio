@@ -2,252 +2,1558 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>artem | Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Портфолио | Видеомонтаж</title>
     <style>
-        /* ПОЛНОЕ СКРЫТИЕ КУРСОРA */
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: #050505;
+            background: 
+                radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 65%, rgba(255, 255, 255, 0.03) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.025) 0%, transparent 35%),
+                #000000;
+            background-color: #000000;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            -webkit-font-smoothing: antialiased;
             min-height: 100vh;
             overflow-x: hidden;
+            width: 100%;
+            padding-bottom: 100px;
+            position: relative;
+            font-size: 18px;
         }
 
-        /* МЯГКИЙ ШУМ */
-        body::before {
-            content: "";
+        /* Эффект шума (Noise) на фоне */
+        .noise-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            opacity: 0.02;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 100;
+            z-index: 1;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* КАСТОМНЫЙ КУРСОР */
-        #cursor {
-            width: 25px;
-            height: 25px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
+        #particles-canvas {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease-in-out;
-            opacity: 0;
-            will-change: left, top;
+            z-index: 2;
         }
 
-        .bg-gradient {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -10%, #1a1a1a 0%, #050505 70%);
-            z-index: -1;
+        video {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            max-width: 100%;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 80px 20px;
+            width: 100%;
+            padding: 24px 28px 0 28px;
             position: relative;
-            z-index: 5;
+            z-index: 3;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 
+                0 12px 40px 0 rgba(0, 0, 0, 0.75),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.025) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 100px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: calc(100% - 56px);
+            max-width: 1400px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.65rem;
+            color: #888888;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 36px;
+        }
+
+        nav a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        .header-btns {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-channel {
+            background: rgba(255, 255, 255, 0.05);
+            color: #d0d0d0;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-channel:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-header {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 12px 26px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: opacity 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-header:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
         }
 
         .hero {
             text-align: center;
-            margin-bottom: 80px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding-top: 80px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #dddddd;
+            margin-bottom: 32px;
+            backdrop-filter: blur(12px);
+            max-width: 100%;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffffff;
+            flex-shrink: 0;
         }
 
         .hero h1 {
-            font-size: clamp(60px, 15vw, 130px);
-            font-weight: 800;
-            letter-spacing: -6px;
-            line-height: 0.9;
-            text-transform: lowercase;
-            margin-bottom: 15px;
-            background: linear-gradient(180deg, #fff 40%, rgba(255,255,255,0.3) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero .description {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 40px;
-        }
-
-        /* КОНТЕЙНЕР ДЛЯ КНОПОК */
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-glass {
-            display: inline-block;
-            padding: 18px 45px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
+            font-size: 4.8rem;
+            font-weight: 900;
             text-transform: uppercase;
-            border-radius: 100px;
-            transition: all 0.3s ease;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            max-width: 1100px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
+            word-wrap: break-word;
         }
 
-        .btn-glass:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-        }
-
-        .glass-label {
-            display: inline-block;
-            padding: 12px 28px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.8);
-            margin: 40px 0;
-        }
-
-        .grid {
-            display: grid;
-            gap: 25px;
-            margin-bottom: 80px;
-            width: 100%;
-        }
-
-        .grid.vertical { 
-            grid-template-columns: repeat(2, 1fr); 
+        .hero p {
+            font-size: 1.6rem;
+            color: #b5b5b5;
             max-width: 800px;
-            margin: 0 auto 80px;
+            margin-bottom: 48px;
+            font-weight: 400;
+            line-height: 1.4;
         }
 
-        .grid.horizontal { 
-            grid-template-columns: repeat(2, 1fr); 
+        .btn-projects {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 18px 52px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 30px rgba(255, 255, 255, 0.2);
         }
 
-        .item {
-            position: relative;
-            background: #000;
-            border-radius: 32px;
+        .btn-projects:hover {
+            background-color: #e5e5e5;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+        }
+
+        .about-section {
+            padding: 40px 0 60px;
+            scroll-margin-top: 120px;
+        }
+
+        .about-card {
+            border-radius: 28px;
+            padding: 48px;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .about-photo-wrapper {
+            width: 100%;
+            height: 420px;
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
-        .vertical .item { aspect-ratio: 9/16; }
-        .horizontal .item { aspect-ratio: 16/9; }
-
-        video {
+        .about-photo-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .about-content h2 {
+            font-size: 2.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .about-content h2 span {
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
+        }
+
+        .about-text {
+            color: #b0b0b0;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .about-text p {
+            margin-bottom: 14px;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .stat-desc {
+            font-size: 0.85rem;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .wiki-section {
+            padding: 20px 0 60px;
+        }
+
+        .wiki-card {
+            border-radius: 28px;
+            padding: 44px 48px;
+        }
+
+        .wiki-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .wiki-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .wiki-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .wiki-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .wiki-item {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 28px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .wiki-item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .wiki-item-icon {
+            font-size: 1.4rem;
+        }
+
+        .wiki-item-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .wiki-item p {
+            font-size: 1.05rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        /* Портфолио: Блоки рядом друг с другом */
+        .groups-section {
+            padding: 40px 0;
+            scroll-margin-top: 120px;
+        }
+
+        .section-header-main {
+            margin-bottom: 36px;
+        }
+
+        .section-header-main h2 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .groups-horizontal-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .category-group {
+            border-radius: 28px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .category-header {
+            padding: 24px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .category-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .category-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-count {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .toggle-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-group.open .toggle-icon {
+            transform: rotate(180deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease;
+            opacity: 0;
+            padding: 0 24px;
+        }
+
+        .category-group.open .category-content {
+            max-height: 4500px;
+            opacity: 1;
+            padding: 0 24px 28px 24px;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease 0.1s;
+        }
+
+        .video-grid-two-columns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding-top: 10px;
+        }
+
+        .video-card {
+            border-radius: 18px;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .video-card:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .video-preview-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: radial-gradient(circle at center, #1b1b1b 0%, #050505 100%);
+            overflow: hidden;
+        }
+
+        .video-preview-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(3px) brightness(0.6);
+            transition: filter 0.3s, transform 0.3s;
+        }
+
+        .video-card:hover .video-preview-wrapper video {
+            filter: blur(1px) brightness(0.85);
+            transform: scale(1.04);
+        }
+
+        .play-btn-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .play-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s, border-color 0.2s;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .play-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+            margin-left: 2px;
+        }
+
+        .video-card:hover .play-icon {
+            transform: scale(1.12);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffffff;
+        }
+
+        .video-info {
+            padding: 14px 16px 16px;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffffff;
+            line-height: 1.25;
+        }
+
+        .video-desc {
+            font-size: 0.85rem;
+            color: #a5a5a5;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .case-link {
+            color: #ffffff;
+            text-decoration: underline;
+            font-weight: 700;
+            transition: opacity 0.2s;
+        }
+
+        .case-link:hover {
+            opacity: 0.8;
+        }
+
+        .video-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag-item {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .contacts-section {
+            padding-top: 40px;
+            margin-bottom: 40px;
+            scroll-margin-top: 120px;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        .contact-card {
+            border-radius: 28px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .contact-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .contact-card-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .contact-card-desc {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .btn-contact-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-contact-main {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .btn-contact-main:hover {
+            background-color: #e5e5e5;
+            transform: scale(1.03);
+        }
+
+        .btn-contact-channel {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-contact-channel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.03);
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            width: 100%;
+            max-width: 1200px;
+            max-height: 90vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(20, 20, 20, 0.95) 100%);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-video-side {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .modal-video-side video {
+            width: 100%;
+            height: 100%;
+            max-height: 680px;
+            object-fit: contain;
             display: block;
         }
 
-        .video-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: transparent;
-            z-index: 10;
+        .modal-info-side {
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
         }
 
-        @media (max-width: 800px) {
-            .grid.vertical, .grid.horizontal { grid-template-columns: 1fr; }
-            #cursor { display: none; }
-            * { cursor: auto !important; }
-            .btn-glass { width: 100%; text-align: center; }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            gap: 16px;
+        }
+
+        .modal-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-close-modal {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #cccccc;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            font-weight: 600;
+        }
+
+        .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .modal-body h3 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .modal-body p {
+            font-size: 1.15rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            margin-top: 40px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-modal-action {
+            background: #ffffff;
+            color: #000000;
+            padding: 16px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 800;
+            transition: transform 0.2s, background-color 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-modal-action:hover {
+            background: #e5e5e5;
+            transform: translateY(-2px);
+        }
+
+        /* Адаптивность для экранов */
+        @media (max-width: 1200px) {
+            .groups-horizontal-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .modal-container { 
+                grid-template-columns: 1fr; 
+                max-height: 90vh; 
+                overflow-y: auto; 
+            }
+            .modal-video-side video { 
+                max-height: 350px; 
+            }
+            .modal-info-side { 
+                padding: 32px; 
+            }
+            .wiki-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            .hero p {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 16px 16px 0 16px;
+            }
+
+            header {
+                padding: 12px 20px;
+                top: 12px;
+                width: calc(100% - 32px);
+            }
+
+            nav, .btn-channel { 
+                display: none; 
+            }
+
+            .btn-header {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+
+            .hero {
+                min-height: 100vh;
+                padding-top: 100px;
+                padding-bottom: 40px;
+                justify-content: center;
+            }
+
+            .hero h1 { 
+                font-size: 2.3rem; 
+                line-height: 1.1;
+                margin-bottom: 20px;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+                margin-bottom: 36px;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 6px 16px;
+            }
+
+            .btn-projects {
+                padding: 16px 36px;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .about-card { 
+                grid-template-columns: 1fr; 
+                padding: 24px;
+                gap: 28px;
+            }
+
+            .about-photo-wrapper { 
+                height: 280px; 
+            }
+
+            .about-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .about-text {
+                font-size: 1rem;
+            }
+
+            .wiki-card {
+                padding: 24px;
+            }
+
+            .wiki-title {
+                font-size: 1.3rem;
+            }
+
+            .section-header-main h2 {
+                font-size: 1.8rem;
+            }
+
+            .category-header {
+                padding: 18px 20px;
+            }
+
+            .category-title {
+                font-size: 1.1rem;
+            }
+
+            .category-group.open .category-content {
+                padding: 0 16px 20px 16px;
+            }
+
+            .video-grid-two-columns {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .contacts-grid { 
+                grid-template-columns: 1fr; 
+                gap: 20px;
+            }
+
+            .video-info {
+                padding: 14px;
+            }
+
+            .video-title {
+                font-size: 1.05rem;
+            }
+
+            .video-desc {
+                font-size: 0.9rem;
+            }
+
+            .contact-card {
+                padding: 24px;
+            }
+
+            .contact-card-title {
+                font-size: 1.3rem;
+            }
+
+            .modal-overlay {
+                padding: 12px;
+            }
+
+            .modal-container {
+                border-radius: 20px;
+            }
+
+            .modal-body h3 {
+                font-size: 1.6rem;
+            }
+
+            .modal-body p {
+                font-size: 0.95rem;
+            }
+
+            .btn-contact-action, .btn-modal-action {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="cursor"></div>
-    <div class="bg-gradient"></div>
+    <div class="noise-overlay"></div>
+    <canvas id="particles-canvas"></canvas>
 
     <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="ава сайт.jpg" alt="Артём" class="logo-avatar">
+                <div class="logo">
+                    АРТЁМ
+                    <span>PORTFOLIO</span>
+                </div>
+            </div>
+            <nav>
+                <a href="#about">О себе</a>
+                <a href="#works">Работы</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <div class="header-btns">
+                <a href="https://t.me/imceobitchq" target="_blank" class="btn-channel">Личный канал</a>
+                <a href="https://t.me/Artyomvfx" target="_blank" class="btn-header">Обсудить проект</a>
+            </div>
+        </header>
+
         <section class="hero">
-            <h1>artem</h1>
-            <p class="description">I'm a video editor doing the result</p>
-            <div class="btn-group">
-                <a href="https://t.me/Artydff" target="_blank" class="btn-glass">Связаться</a>
-                <a href="https://t.me/artemmontager" target="_blank" class="btn-glass">Личный блог</a>
+            <div class="badge">
+                <span class="badge-dot"></span>
+                ПРОФЕССИОНАЛЬНЫЙ ВИДЕОМОНТАЖ
+            </div>
+
+            <h1>МОНТАЖ, КОТОРЫЙ<br>ПРОДАЁТ ТВОЙ КОНТЕНТ</h1>
+            
+            <p>Помогаем бизнесу и экспертам получать клиентов из видео</p>
+
+            <a href="#works" class="btn-projects">Смотреть работы</a>
+        </section>
+
+        <section class="about-section" id="about">
+            <div class="about-card glass-panel">
+                <div class="about-photo-wrapper">
+                    <img src="ава сайт.jpg" alt="Артём" loading="lazy">
+                </div>
+
+                <div class="about-content">
+                    <h2>Артём — <span>видеомонтажёр</span></h2>
+                    <div class="about-text">
+                        <p>Привет! Я профессионально занимаюсь видеомонтажом и моушн-дизайном.</p>
+                        <p>Мой главный фокус — создавать видео, которые держат зрителя от первой до последней секунды. Я не просто нарезаю кадры, а прорабатываю динамику, ритм, саунд-дизайн и визуальные эффекты в Premiere Pro и After Effects, чтобы твой контент выглядел дорого и приносил результат.</p>
+                    </div>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-num">Soft</span>
+                            <span class="stat-desc">Premiere Pro / AE</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num">Focus</span>
+                            <span class="stat-desc">Динамика & Sound Design</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <center><div class="glass-label">Shorts / Reels</div></center>
-        <section class="grid vertical">
-            <div class="item">
-                <video src="https://www.dropbox.com/scl/fi/usfjtyibj6vxxzfn3o1no/video_2026-04-22_17-49-02.mp4?rlkey=7u6e4n8uyofmajvzw83vnlio1&st=ihhpqbvn&raw=1" playsinline loop muted></video>
-                <div class="video-overlay"></div>
-            </div>
-            <div class="item">
-                <video src="https://www.dropbox.com/scl/fi/6cftig0aplaahy5bxamq9/.mp4?rlkey=nhs9k8ppj1fze31ak9wsumqhr&st=ob28lie7&raw=1" playsinline loop muted></video>
-                <div class="video-overlay"></div>
+        <section class="wiki-section">
+            <div class="wiki-card glass-panel">
+                <div class="wiki-header">
+                    <span class="wiki-tag">База знаний</span>
+                    <h2 class="wiki-title">Анатомия удержания внимания</h2>
+                </div>
+                
+                <div class="wiki-grid">
+                    <div class="wiki-item">
+                        <div class="wiki-item-header">
+                            <span class="wiki-item-icon">⚡</span>
+                            <h3 class="wiki-item-title">Зацепка (Hook) — первые 3 секунды</h3>
+                        </div>
+                        <p>Первые секунды ролика решают 80% его успеха. Если зритель не зацеплен визуалкой, динамикой или интригующей фразой сразу — он свайпает дальше. Правильный монтажный хук моментально ломает паттерн внимания и заставляет остаться.</p>
+                    </div>
+
+                    <div class="wiki-item">
+                        <div class="wiki-item-header">
+                            <span class="wiki-item-icon">🎯</span>
+                            <h3 class="wiki-item-title">Удержание на протяжении ВСЕГО видео</h3>
+                        </div>
+                        <p>Хук открывает дверь, но удерживать внимание нужно каждую секунду. Для этого в монтаже меняются планы каждые 1.5–3 секунды, внедряется акцентный Sound Design, динамические 3D-тексты и переходы, не давая зрителю заскучать до самого финала.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <center><div class="glass-label">Commercial</div></center>
-        <section class="grid horizontal">
-            <div class="item">
-                <video src="https://www.dropbox.com/scl/fi/jk0hym12v0srfdwxfhfcu/vod.mp4?rlkey=txpfdjtdjazvj8i10vltciks6&st=zyq1yiiw&raw=1" controls playsinline loop muted></video>
-                <div class="video-overlay"></div>
+        <section class="groups-section" id="works">
+            <div class="section-header-main">
+                <h2>Портфолио</h2>
             </div>
-            <div class="item">
-                <video src="https://www.dropbox.com/scl/fi/bwe81chyueujtrjpx36vv/.mp4?rlkey=z3y1mlbpas0zq46bpux0pobx7&st=fambersn&raw=1" controls playsinline loop muted></video>
-                <div class="video-overlay"></div>
+
+            <div class="groups-horizontal-row">
+                
+                <!-- Блок Слева: Экспертный монтаж (3 видео) -->
+                <div class="category-group glass-panel open" id="group-expert">
+                    <div class="category-header" onclick="toggleCategory('group-expert')">
+                        <div class="category-info">
+                            <h3 class="category-title">Экспертный монтаж</h3>
+                            <span class="category-count">3</span>
+                        </div>
+                        <div class="toggle-icon">
+                            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <div class="video-grid-two-columns">
+                            
+                            <!-- Коммерческий обзор (Обновленная сжатая ссылка) -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/m51qsofpfffe9n5344qwx/2-1-_2.mp4?rlkey=3pk57u8yphw05qa5i0qhpejvl&st=jg2kmqi8&raw=1', 'YouTube / Коммерческий обзор', 'Динамичный монтаж длинного формата, проработка удержания внимания, цветокоррекция и Sound Design.', 'Premiere Pro')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/m51qsofpfffe9n5344qwx/2-1-_2.mp4?rlkey=3pk57u8yphw05qa5i0qhpejvl&st=jg2kmqi8&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">YouTube / Коммерческий обзор</h3>
+                                    <p class="video-desc">Динамичный монтаж длинного формата, удержание внимания и Sound Design.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Premiere Pro</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Документальный фильм -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/zxot8gw9ngm8r3iff407f/1.mp4?rlkey=cijmy1j6rdkx3qbld41pzlw06&raw=1', 'Экспертный / Документальный фильм', 'Глубокая работа со смысловой структурой, создание атмосферы и визуальное сопровождение тезисов.', 'Storytelling')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/zxot8gw9ngm8r3iff407f/1.mp4?rlkey=cijmy1j6rdkx3qbld41pzlw06&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Документальный фильм</h3>
+                                    <p class="video-desc">Глубокая работа со смысловой структурой и визуалом.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Storytelling</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Моушен в стиле Apple -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/fey8i7vab1ytkimq2s9vc/.mp4?rlkey=39y810wcx7vayeupocwqsa8em&raw=1', 'Моушен в стиле Apple', 'Плавность, лаконичность и минимализм. Чистая эстетика, выверенный ритм и аккуратная анимация деталей.', 'Apple Style')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/fey8i7vab1ytkimq2s9vc/.mp4?rlkey=39y810wcx7vayeupocwqsa8em&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Моушен в стиле Apple</h3>
+                                    <p class="video-desc">Плавность, лаконичность и аккуратная анимация.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Apple Style</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Блок Справа: Игровой монтаж (5 видео) -->
+                <div class="category-group glass-panel open" id="group-gaming">
+                    <div class="category-header" onclick="toggleCategory('group-gaming')">
+                        <div class="category-info">
+                            <h3 class="category-title">Игровой монтаж</h3>
+                            <span class="category-count">5</span>
+                        </div>
+                        <div class="toggle-icon">
+                            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <div class="video-grid-two-columns">
+                            
+                            <!-- Кейс ENZO (Обновленная сжатая ссылка 3-1-_1.mp4) -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/ko8fit7wiutxjdnihhfz5/3-1-_1.mp4?rlkey=tqylq7dma05i4rp4w0x7wg3ei&st=ryohxnzi&raw=1', 'Кейс: ENZO (84 000 просмотров)', 'Игровой монтаж для ENZO (548к подписчиков в YouTube).', 'YouTube Case')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/ko8fit7wiutxjdnihhfz5/3-1-_1.mp4?rlkey=tqylq7dma05i4rp4w0x7wg3ei&st=ryohxnzi&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">ENZO (84 000 просмотров)</h3>
+                                    <p class="video-desc">Игровой монтаж для ENZO (548к подписчиков в YouTube).</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">YouTube Case</span>
+                                        <span class="tag-item">84k views</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Кейс Смоук (Обновленная сжатая ссылка 1-_1.mp4) -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/otku32gd0hgyul5o99phz/1-_1.mp4?rlkey=7sqfvkulfnn8c5f5kq6pl5ps2&st=wy8cqd2y&raw=1', 'Кейс: Смоук', 'Игровой монтаж для Смоука (30 000 подписчиков на YouTube). Результат: поднятие просмотров в 3 раза по сравнению с последними роликами.', 'YouTube Case')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/otku32gd0hgyul5o99phz/1-_1.mp4?rlkey=7sqfvkulfnn8c5f5kq6pl5ps2&st=wy8cqd2y&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Кейс: Смоук</h3>
+                                    <p class="video-desc">Рост просмотров в 3 раза. <a href="https://youtu.be/nvTDnOiEV60?si=4PeiPVOFB7oBcpJ6" target="_blank" class="case-link" onclick="event.stopPropagation();">Видео</a>.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">YouTube Case</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Кейс КРАСАВА -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/54ug2bddcql773r0wvywb/.mp4?rlkey=vdwvxhyfm6qmz4jhetosdgg2l&raw=1', 'Кейс: КРАСАВА', 'Видос для КРАСАВА (30к фоловеров на Твиче).', 'Twitch Case')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/54ug2bddcql773r0wvywb/.mp4?rlkey=vdwvxhyfm6qmz4jhetosdgg2l&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Кейс: КРАСАВА</h3>
+                                    <p class="video-desc">Монтаж для стримера 30k фолловеров.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Twitch Case</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Игровой монтаж 1 (Обновленная сжатая ссылка 2-1.mp4) -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/uvet6nlkc9amnui6b08az/2-1.mp4?rlkey=zih773bkxcbidcom6aoew87yc&st=a1be5eog&raw=1', 'Игровой монтаж', 'Продвинутая обработка игрового геймплея, горизонтальный формат 16:9, динамика и работа со звуком.', 'Gaming')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/uvet6nlkc9amnui6b08az/2-1.mp4?rlkey=zih773bkxcbidcom6aoew87yc&st=a1be5eog&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Игровой монтаж #1</h3>
+                                    <p class="video-desc">Продвинутая обработка геймплея и динамика.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Gaming</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Игровой монтаж 2 (Обновленная сжатая ссылка 1-_1.mp4) -->
+                            <div class="video-card glass-panel" onclick="openModal('https://dl.dropboxusercontent.com/scl/fi/4p67cjjagujpgydf6hen3/1-_1.mp4?rlkey=f6p54jk5woo3yit9gbsgyh7xf&st=73r1ayz0&raw=1', 'Игровой монтаж', 'Продвинутая обработка игрового геймплея, горизонтальный формат 16:9, динамика и работа со звуком.', 'Gaming')">
+                                <div class="video-preview-wrapper">
+                                    <video class="lazy-video" data-src="https://dl.dropboxusercontent.com/scl/fi/4p67cjjagujpgydf6hen3/1-_1.mp4?rlkey=f6p54jk5woo3yit9gbsgyh7xf&st=73r1ayz0&raw=1#t=0.5" preload="none" muted playsinline></video>
+                                    <div class="play-btn-overlay">
+                                        <div class="play-icon">
+                                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-info">
+                                    <h3 class="video-title">Игровой монтаж #2</h3>
+                                    <p class="video-desc">Обработка игрового видео 16:9 со звуком.</p>
+                                    <div class="video-tags">
+                                        <span class="tag-item">Gaming</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
+
+        <section class="contacts-section" id="contacts">
+            <div class="section-header-main">
+                <h2>Контакты</h2>
+            </div>
+
+            <div class="contacts-grid">
+                <div class="contact-card glass-panel">
+                    <div>
+                        <h3 class="contact-card-title">Связаться со мной</h3>
+                        <p class="contact-card-desc">Готов обсудить твой проект, ответить на вопросы или сделать тестовый монтаж.</p>
+                    </div>
+                    <a href="https://t.me/Artyomvfx" target="_blank" class="btn-contact-action btn-contact-main">
+                        Написать в Telegram →
+                    </a>
+                </div>
+
+                <div class="contact-card glass-panel">
+                    <div>
+                        <h3 class="contact-card-title">Мой Telegram-канал</h3>
+                        <p class="contact-card-desc">Делюсь процессами работы, мыслями о монтаже и своими новыми проектами.</p>
+                    </div>
+                    <a href="https://t.me/imceobitchq" target="_blank" class="btn-contact-action btn-contact-channel">
+                        Перейти в канал ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="modal-overlay" id="videoModal" onclick="closeModalOnOverlay(event)">
+        <div class="modal-container">
+            <div class="modal-video-side">
+                <video id="modalVideo" controls playsinline preload="auto" controlslist="nodownload" oncontextmenu="return false;"></video>
+            </div>
+            <div class="modal-info-side">
+                <div>
+                    <div class="modal-header">
+                        <span class="modal-tag" id="modalTag">Gaming</span>
+                        <button class="btn-close-modal" onclick="closeModal()">Close ✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 id="modalTitle">Название проекта</h3>
+                        <p id="modalDesc">Описание видео и детали работы.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="https://t.me/Artyomvfx" target="_blank" class="btn-modal-action">Обсудить монтаж →</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const cursor = document.getElementById('cursor');
+        function toggleCategory(groupId) {
+            const group = document.getElementById(groupId);
+            if (group) {
+                group.classList.toggle('open');
+            }
+        }
 
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalTag = document.getElementById('modalTag');
 
-        document.addEventListener('mouseenter', () => { cursor.style.opacity = 1; });
-        document.addEventListener('mouseleave', () => { cursor.style.opacity = 0; });
-
-        document.querySelectorAll('.item').forEach(item => {
-            const video = item.querySelector('video');
-            const overlay = item.querySelector('.video-overlay');
-
-            overlay.addEventListener('mouseenter', () => { video.play(); });
-            overlay.addEventListener('mouseleave', () => { video.pause(); });
+        function openModal(videoSrc, title, desc, tag) {
+            if (!modal || !modalVideo) return;
+            modalVideo.src = videoSrc;
+            modalTitle.textContent = title;
+            modalDesc.textContent = desc;
+            modalTag.textContent = tag;
             
-            overlay.addEventListener('click', () => {
-                video.muted = !video.muted;
-            });
+            modal.classList.add('active');
+            modalVideo.play().catch(e => console.log('Autoplay error: ', e));
+        }
+
+        function closeModal() {
+            if (!modal || !modalVideo) return;
+            modal.classList.remove('active');
+            modalVideo.pause();
+            modalVideo.currentTime = 0;
+            modalVideo.removeAttribute('src');
+            modalVideo.load();
+        }
+
+        function closeModalOnOverlay(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                closeModal();
+            }
         });
+
+        // Умная отложенная загрузка превью видео
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.addEventListener('contextmenu', (e) => e.preventDefault());
+            });
+
+            const lazyVideos = document.querySelectorAll('video.lazy-video');
+            if ('IntersectionObserver' in window) {
+                const videoObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const video = entry.target;
+                            if (video.dataset.src) {
+                                video.src = video.dataset.src;
+                                video.preload = 'metadata';
+                                video.removeAttribute('data-src');
+                            }
+                            observer.unobserve(video);
+                        }
+                    });
+                }, { rootMargin: '200px 0px' });
+
+                lazyVideos.forEach(video => videoObserver.observe(video));
+            } else {
+                lazyVideos.forEach(video => {
+                    video.src = video.dataset.src;
+                });
+            }
+        });
+
+        const canvas = document.getElementById('particles-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let particlesArray = [];
+            const numberOfParticles = window.innerWidth < 768 ? 25 : 50;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = -Math.random() * 0.5 - 0.2;
+                    this.opacity = Math.random() * 0.35 + 0.05;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.y < 0) {
+                        this.y = canvas.height;
+                        this.x = Math.random() * canvas.width;
+                    }
+                    if (this.x < 0 || this.x > canvas.width) {
+                        this.speedX = -this.speedX;
+                    }
+                }
+
+                draw() {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particlesArray = [];
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particlesArray.push(new Particle());
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particlesArray.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                requestAnimationFrame(animateParticles);
+            }
+
+            initParticles();
+            animateParticles();
+        }
     </script>
 </body>
 </html>
